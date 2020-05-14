@@ -1,0 +1,49 @@
+spring:
+  h2:
+    console:
+      enabled: true
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+  datasource:
+    url: jdbc:h2:mem:dvdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: password
+
+
+app:
+  config:
+    web:
+      base-href-static-files: /
+    excel:
+      metadata-sheet-name: Table
+      table-col-def:
+        row-start: 10
+        col-column-name: 1
+        col-column-data-type: 9
+        col-column-size: 10
+        col-column-precision: 11
+        col-column-is-key: 12
+        col-column-is-nullable: 14
+        col-column-default-value: 15
+      table-def:
+        table-name:
+          row: 1
+          col: 2
+        table-type:
+          row: 2
+          col: 2
+        table-display-name:
+          row: 3
+          col: 2
+        table-database-schema:
+          row: 4
+          col: 2
+        table-desc:
+          row: 5
+          col: 2
+        table-comment:
+          row: 6
+          col: 2
+
+

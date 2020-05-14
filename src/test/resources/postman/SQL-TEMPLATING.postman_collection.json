@@ -1,0 +1,58 @@
+{
+	"info": {
+		"_postman_id": "c4a7b09b-bf32-477b-98d8-3ba6ca4afaa3",
+		"name": "SQL-TEMPLATING",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "MultiPartFileUpload",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "multipart/form-data",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "scriptKind",
+							"value": "CREATE",
+							"type": "text"
+						},
+						{
+							"key": "files",
+							"type": "file",
+							"src": "/C:/Users/keith/Documents/DevProjects/ideam/sanlam/dv-sql-templating/src/main/resources/excel/input.xlsx"
+						},
+						{
+							"key": "files",
+							"type": "file",
+							"src": "/C:/Users/keith/Documents/DevProjects/ideam/sanlam/dv-sql-templating/src/main/resources/excel/input.xlsx"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/generate/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"generate",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

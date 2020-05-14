@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dep-${K8S_OBJECTNAMEQUALIFIER}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-${K8S_OBJECTNAMEQUALIFIER}
+  template:
+    metadata:
+      labels:
+        app: app-${K8S_OBJECTNAMEQUALIFIER}
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      containers:
+        - name: app-${K8S_OBJECTNAMEQUALIFIER}
+          image: ${DEPLOY_IMAGE_NAME}
+          ports:
+            - name: default-port
+              containerPort: 8080
+          env:
+            - name: SERVER_SERVLET_CONTEXT_PATH
+              value: /${K8S_INGRESSPATH}
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-${K8S_OBJECTNAMEQUALIFIER}
+spec:
+  ports:
+    - port: 8080
+  selector:
+    app: app-${K8S_OBJECTNAMEQUALIFIER}
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ing-${K8S_OBJECTNAMEQUALIFIER}
+  namespace: default
+spec:
+  rules:
+    - host: lab.ideam.co.za
+      http:
+        paths:
+          - backend:
+              serviceName: svc-${K8S_OBJECTNAMEQUALIFIER}
+              servicePort: 8080
+            path: /${K8S_INGRESSPATH}

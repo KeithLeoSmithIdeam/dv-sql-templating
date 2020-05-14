@@ -1,0 +1,11 @@
+#These are the project specififc environment variables
+
+variables:
+  PRJ_PROJECT_NAME: 'sql-templating'
+  PRJ_PROJECT_PATH: 'sanlam'
+  K8S_OBJECTNAMEQUALIFIER: sql-templating
+  K8S_INGRESSPATH: data/sql-templating
+  PRJ_K8S_FILE_LOCATION: ci/k8s.yml
+  PRJ_DOCKER_FILE_LOCATION: Dockerfile
+  PRJ_JAR: dv-templating-0.0.1-SNAPSHOT.jar
+

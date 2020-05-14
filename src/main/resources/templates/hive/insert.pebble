@@ -1,0 +1,52 @@
+
+
+--{%br%}
+
+{#- Set things up #}
+
+{{- addProcedureHeader(settings.deleteBeforeInsert, settings.deleteBeforeInsertTruncate)}}{%br%}
+  {{- addProcedureCommentBlock(commentMessage = "MAIN")}}
+  SET @v_step = {% counter %}00{%br%}{%br%}
+  {%- if settings.deleteBeforeInsert and not settings.deleteBeforeInsertTruncate %}  SET @v_delete_count = 0{%br%} {%- endif %}
+  SET @v_insert_count = 0{%br%}
+  SET @v_current_datetime = GETDATE(){%br%}{%br%}
+  BEGIN TRY{%br%}{%br%}
+
+{#- Delete old records #}
+
+{%- if settings.deleteBeforeInsert %}
+    {{- addProcedureCommentBlock(indentString = "    ", commentMessage = "Delete existing records")}}
+    SET @v_step = {% counter %}00{%br%}{%br%}
+  {%- if settings.deleteBeforeInsertTruncate %}
+    SET @v_sql = N'TRUNCATE TABLE [TABLEOWNER].[{{table.name}}]';{%br%}
+    EXEC @v_return_status = sp_executesql @v_sql{%br%}
+  {%- else %}
+    DELETE FROM [TABLEOWNER].[{{table.name}}]{%br%}
+    {%- if settings.deleteWhereClause | trim != "" %}    {{settings.deleteWhereClause}}{%br%} {%- endif %}
+    ;{%br%}{%br%}
+    SELECT @v_delete_count = @@ROWCOUNT{%br%}
+  {%- endif %}
+{%- endif %}{%br%}
+
+{#- Insert new records #}
+
+    {{- addProcedureCommentBlock(indentString = "    ", commentMessage = "Insert new records")}}
+    SET @v_step = {% counter %}00{%br%}{%br%}
+    BEGIN TRANSACTION{%br%}{%br%}
+      INSERT INTO [TABLEOWNER].[{{table.name}}]{%br%}
+      {{- addSetInsertTargetColumns(indentString = "      ")}}
+      SELECT {{distinct()}} {{addSetInsertColumns(indentString = "           ")}}
+      {%- if settings.sourceJoinDetails.join | trim != "" %}      {{settings.sourceJoinDetails.join}}{%br%} {%- endif %}
+      {%- if settings.sourceJoinDetails.where | trim != "" %}      {{settings.sourceJoinDetails.where | trim }}{%br%} {%- endif %}
+      {%- if settings.sourceJoinDetails.groupBy | trim != "" %}      {{settings.sourceJoinDetails.groupBy | trim }}{%br%} {%- endif %}
+      ;{%br%}{%br%}
+      SELECT @v_insert_count = @@ROWCOUNT{%br%}{%br%}
+    COMMIT{%br%}{%br%}
+
+{#- Finish Up #}
+
+    {{- addProcedureCommentBlock(indentString = "    ", commentMessage = "All Done report the results")}}
+    SET @v_step = {% counter %}00{%br%}{%br%}
+  {{- addReturnMessage(settings.deleteBeforeInsert, settings.deleteBeforeInsertTruncate)}}
+  END TRY{%br%}
+  {{- addProcedureException() -}}
